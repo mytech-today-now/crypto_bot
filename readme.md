@@ -2,7 +2,7 @@
 
 ---
 
-
+|        |        |
 | ------ | ------ |
 | **Name** | ChatBTC Cryptotrading Bot |
 | **Designer** | kyle@mytech.today |
