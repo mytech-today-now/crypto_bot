@@ -1,49 +1,101 @@
-# scheduler_10.13.py
-
-# 2023-03-26
-# Designer: mytechtoday@protonmail.com
-# Coder: ChatGPT
-
-# This file defines the Scheduler class, which handles the scheduling of recurring buy or sell orders based on the trading pairs and intervals specified in the config_10.13 file. The schedule_orders function creates a new instance of the Scheduler class and starts a new thread for it to run in. The thread runs the run method of the Scheduler class, which continuously checks if an order needs to be placed based on the current time and the specified intervals. If an order needs to be placed, it calls the place_order method of the ExchangeAPI class to place the order.
-# The Scheduler class has a stop method that can be called to stop the scheduler and its thread from running. This is useful when the program needs to be shut down cleanly.
-# The is_interval_due method checks if an interval is due based on the current time and the specified interval. It returns True if an interval is due, and False otherwise.
-
-
+import sqlite3
 import time
-import threading
-
-from datetime import datetime, timedelta
-from typing import List
-
-from config import TRADING_PAIRS, INTERVALS
-from exchange_api import ExchangeAPI
-
 
 class Scheduler:
-    def __init__(self, api: ExchangeAPI, trading_pairs: List[str], intervals: List[int]):
-        self.api = api
-        self.trading_pairs = trading_pairs
-        self.intervals = intervals
-        self.stopped = False
+    def __init__(self):
+        self.conn = sqlite3.connect('app.db')
+        self.cursor = self.conn.cursor()
 
-    def run(self):
-        while not self.stopped:
-            now = datetime.utcnow()
-            for pair in self.trading_pairs:
-                for interval in self.intervals:
-                    if self._is_interval_due(now, interval):
-                        self.api.place_order(pair, interval)
-            time.sleep(60)
+    def create_order(self, order_type, symbol, quantity, price):
+        """
+        Creates a new buy or sell order with the given parameters.
+        """
+        try:
+            # validate input
+            if order_type not in ['buy', 'sell']:
+                raise ValueError('Invalid order type. Must be "buy" or "sell".')
+            if not symbol:
+                raise ValueError('Symbol is required.')
+            if not quantity or quantity <= 0:
+                raise ValueError('Quantity must be a positive number.')
+            if not price or price <= 0:
+                raise ValueError('Price must be a positive number.')
+            
+            # insert order into database
+            timestamp = int(time.time())
+            self.cursor.execute('INSERT INTO orders (order_type, symbol, quantity, price, timestamp) VALUES (?, ?, ?, ?, ?)', 
+                                (order_type, symbol, quantity, price, timestamp))
+            self.conn.commit()
+            return True
+        except Exception as e:
+            print(f'Error creating order: {e}')
+            return False
 
-    def stop(self):
-        self.stopped = True
+    def schedule_order(self, order_type, symbol, quantity, price, frequency, start_time):
+        """
+        Schedules a recurring buy or sell order with the given parameters.
+        """
+        try:
+            # validate input
+            if not frequency or frequency <= 0:
+                raise ValueError('Frequency must be a positive number.')
+            if not start_time:
+                raise ValueError('Start time is required.')
 
-    def _is_interval_due(self, now: datetime, interval: int) -> bool:
-        return now.minute % interval == 0
+            # create initial order
+            self.create_order(order_type, symbol, quantity, price)
 
+            # insert scheduled order into database
+            self.cursor.execute('INSERT INTO scheduled_orders (order_type, symbol, quantity, price, frequency, start_time) VALUES (?, ?, ?, ?, ?, ?)', 
+                                (order_type, symbol, quantity, price, frequency, start_time))
+            self.conn.commit()
+            return True
+        except Exception as e:
+            print(f'Error scheduling order: {e}')
+            return False
 
-def schedule_orders(api: ExchangeAPI, trading_pairs: List[str], intervals: List[int]):
-    scheduler = Scheduler(api, trading_pairs, intervals)
-    thread = threading.Thread(target=scheduler.run)
-    thread.start()
-    return scheduler, thread
+    def cancel_order(self, order_id):
+        """
+        Cancels the order with the given ID.
+        """
+        try:
+            # delete order from database
+            self.cursor.execute('DELETE FROM orders WHERE id=?', (order_id,))
+            self.conn.commit()
+            return True
+        except Exception as e:
+            print(f'Error canceling order: {e}')
+            return False
+
+    def get_scheduled_orders(self):
+        """
+        Returns a list of all scheduled orders.
+        """
+        try:
+            self.cursor.execute('SELECT * FROM scheduled_orders')
+            return self.cursor.fetchall()
+        except Exception as e:
+            print(f'Error getting scheduled orders: {e}')
+            return []
+
+    def run_scheduled_orders(self):
+        """
+        Runs all scheduled orders that are due.
+        """
+        try:
+            timestamp = int(time.time())
+            self.cursor.execute('SELECT * FROM scheduled_orders WHERE start_time <= ? AND (? - start_time) % frequency = 0', 
+                                (timestamp, timestamp))
+            orders = self.cursor.fetchall()
+
+            for order in orders:
+                self.create_order(order[1], order[2], order[3], order[4])
+
+            return True
+        except Exception as e:
+            print(f'Error running scheduled orders: {e}')
+            return False
+
+    def __del__(self):
+        self.cursor.close()
+        self.conn.close()

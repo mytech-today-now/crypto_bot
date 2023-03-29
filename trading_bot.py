@@ -1,58 +1,90 @@
-# trading_bot_10.13.py
+import sqlite3
+from datetime import datetime
+from typing import List, Tuple
 
-# 2023-03-26
-# Designer: mytechtoday@protonmail.com
-# Coder: ChatGPT
-
-# This file defines the Scheduler class, which handles the scheduling of recurring buy or sell orders based on the trading pairs and intervals specified in the config_10.13 file. The schedule_orders function creates a new instance of the Scheduler class and starts a new thread for it to run in. The thread runs the run method of the Scheduler class, which continuously checks if an order needs to be placed based on the current time and the specified intervals. If an order needs to be placed, it calls the place_order method of the ExchangeAPI class to place the order.
-# The Scheduler class has a stop method that can be called to stop the scheduler and its thread from running. This is useful when the program needs to be shut down cleanly.
-# The is_interval_due method checks if an interval is due based on the current time and the specified interval. It returns True if an interval is due, and False otherwise.
-
-from exchange_api import ExchangeAPI
+from binance_api import BinanceAPI
+from coinbase_api import CoinbaseAPI
+from gemini_api import GeminiAPI
+from lstm_model import LSTMModel
+from arima_model import ARIMAModel
+from gpt3_model import GPT3Model
+from email_notification import EmailNotification
 from scheduler import Scheduler
-from html_logger import HtmlLogger
-from notification import EmailNotifier
-from config import config
+from config import Config
+
 
 class TradingBot:
     """
-    The main class for the trading bot application. It brings together all the other classes and functions to create a
-    complete trading bot. It allows the user to configure the trading strategy, set up recurring orders, and view the bot's
-    transactions through an HTML dashboard.
+    The main class for the trading bot application.
     """
 
-    def __init__(self):
-        # Create instances of required classes
-        self.exchange_api = ExchangeAPI()
-        self.scheduler = Scheduler(self.exchange_api)
-        self.html_logger = HtmlLogger()
-        self.notification = EmailNotifier()
+    def __init__(self, exchange: str, api_key: str, secret_key: str):
+        """
+        Initializes the TradingBot object with the specified exchange and API credentials.
+
+        :param exchange: The name of the exchange to use (e.g. "binance", "coinbase", "gemini").
+        :param api_key: The API key for the exchange account.
+        :param secret_key: The secret key for the exchange account.
+        """
+        self.exchange = exchange
+        self.api_key = api_key
+        self.secret_key = secret_key
+
+        # Create an instance of the appropriate API class based on the exchange name
+        if exchange.lower() == "binance":
+            self.api = BinanceAPI(api_key, secret_key)
+        elif exchange.lower() == "coinbase":
+            self.api = CoinbaseAPI(api_key, secret_key)
+        elif exchange.lower() == "gemini":
+            self.api = GeminiAPI(api_key, secret_key)
+        else:
+            raise ValueError(f"Unsupported exchange: {exchange}")
+
+        # Initialize the AI models
+        self.lstm_model = LSTMModel()
+        self.arima_model = ARIMAModel()
+        self.gpt3_model = GPT3Model()
+
+        # Initialize the email notification system
+        self.email_notification = EmailNotification()
+
+        # Initialize the scheduler
+        self.scheduler = Scheduler()
+
+        # Load the user configuration settings from the SQLite database
+        self.config = Config()
+        self.config.load_settings()
 
     def run(self):
         """
-        The main function that runs the trading bot.
+        Runs the trading bot application.
         """
-        # Get the current balances
-        balances = self.exchange_api.get_balances()
+        # TODO: Implement the main trading bot logic
+        pass
 
-        # Execute the configured trading strategy
-        self.execute_trading_strategy(balances)
-
-        # Schedule recurring orders
-        self.scheduler.schedule_recurring_orders()
-
-        # Log the transaction details in HTML format
-        self.html_logger.log_transaction(balances)
-
-        # Send email notification to the user
-        self.notification.send_notification(balances)
-
-    def execute_trading_strategy(self, balances):
+    def configure_trading_strategy(self, strategy: str):
         """
-        The function that executes the trading strategy.
-        """
-        # Implement your trading strategy here using the balances and exchange_api
+        Configures the trading strategy to use.
 
-if __name__ == '__main__':
-    bot = TradingBot()
-    bot.run()
+        :param strategy: The name of the trading strategy to use (e.g. "lstm", "arima", "gpt3").
+        """
+        if strategy.lower() == "lstm":
+            self.trading_strategy = self.lstm_model.predict
+        elif strategy.lower() == "arima":
+            self.trading_strategy = self.arima_model.predict
+        elif strategy.lower() == "gpt3":
+            self.trading_strategy = self.gpt3_model.predict
+        else:
+            raise ValueError(f"Unsupported trading strategy: {strategy}")
+
+    def set_recurring_order(self, symbol: str, quantity: float, interval: str):
+        """
+        Sets up a recurring order for the specified symbol and quantity.
+
+        :param symbol: The cryptocurrency symbol to trade (e.g. "BTC", "ETH", "XRP").
+        :param quantity: The quantity of the cryptocurrency to trade.
+        :param interval: The interval at which to place the order (e.g. "daily", "weekly", "monthly").
+        """
+        now = datetime.now()
+        if interval.lower() == "daily":
+            next_run_time = now.replace(hour=0, minute=0, second=

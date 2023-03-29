@@ -1,98 +1,161 @@
-/* dashboard_10.13.css 
+/* Main styles */
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f7f7f7;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
 
-2023-03-26
-Designer: mytechtoday@protonmail.com
-Coder: ChatGPT
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px;
+}
 
-This code is just an example, and the actual CSS file for the dashboard_10.13.html may be different depending on the specific design and layout chosen. However, this code follows some industry best practices such as the use of CSS reset, the implementation of mobile-first design principles, and the use of proper semantic HTML tags to ensure accessibility.
-*/
+/* Header styles */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #1a1a1a;
+  padding: 10px 20px;
+  color: #fff;
+}
 
-/* CSS Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  /* Main container */
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav a {
+  color: #fff;
+  margin-left: 20px;
+  text-decoration: none;
+}
+
+/* Dashboard styles */
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  padding: 10px 20px;
+  border-bottom: 1px solid #ccc;
+}
+
+.dashboard-header h2 {
+  font-size: 20px;
+  margin: 0;
+}
+
+.dashboard-controls {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 10px 20px;
+  border-bottom: 1px solid #ccc;
+}
+
+.dashboard-controls label {
+  font-size: 14px;
+  margin-right: 10px;
+}
+
+.dashboard-controls select {
+  font-size: 14px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #f7f7f7;
+  color: #333;
+}
+
+.dashboard-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+
+.dashboard-content-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.dashboard-content-item h3 {
+  font-size: 24px;
+  margin: 0;
+}
+
+.dashboard-content-item p {
+  font-size: 14px;
+  margin: 0;
+}
+
+@media only screen and (max-width: 768px) {
   .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
+    padding: 10px;
   }
-  
-  /* Header */
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid #ddd;
+
+  header {
+    padding: 10px;
   }
-  
-  .header__title {
-    font-size: 2rem;
-    font-weight: bold;
-  }
-  
-  /* Navigation */
+
   .nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid #ddd;
+    display: none;
   }
-  
-  .nav__item {
-    margin-right: 20px;
-    font-size: 1.2rem;
+
+  .logo {
+    margin-right: auto;
   }
-  
-  .nav__item:last-child {
-    margin-right: 0;
-  }
-  
-  /* Dashboard */
+
   .dashboard {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-gap: 20px;
+    margin-top: 10px;
   }
-  
-  .dashboard__item {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    padding: 20px;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+
+  .dashboard-header h2 {
+    font-size: 18px;
   }
-  
-  .dashboard__title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 10px;
+
+  .dashboard-controls {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px;
   }
-  
-  .dashboard__subtitle {
-    font-size: 1.2rem;
-    font-weight: bold;
+
+  .dashboard-controls label {
+    margin-right: 0;
     margin-bottom: 5px;
   }
-  
-  .dashboard__text {
-    font-size: 1.2rem;
-    margin-bottom: 10px;
+
+  .dashboard-controls select {
+    width: 100%;
   }
-  
-  /* Footer */
-  .footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-    border-top: 1px solid #ddd;
+
+  .dashboard-content {
+    flex-direction: column;
+    padding: 10px;
   }
-  
-  .footer__text {
-    font-size: 1.2rem;
-  }
+
+  .dashboard-content-item {
+    margin-bottom:

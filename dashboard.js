@@ -1,74 +1,74 @@
-/* dashboard_10.13.js
+// Define constants
+const COLOR_SCHEMES = {
+  "light": {
+      "--background-color": "#ffffff",
+      "--text-color": "#333333",
+      "--primary-color": "#007bff",
+      "--secondary-color": "#6c757d",
+      "--accent-color": "#ffc107",
+      "--success-color": "#28a745",
+      "--danger-color": "#dc3545",
+      "--warning-color": "#ffc107"
+  },
+  "dark": {
+      "--background-color": "#1a1a1a",
+      "--text-color": "#f5f5f5",
+      "--primary-color": "#007bff",
+      "--secondary-color": "#6c757d",
+      "--accent-color": "#ffc107",
+      "--success-color": "#28a745",
+      "--danger-color": "#dc3545",
+      "--warning-color": "#ffc107"
+  }
+};
 
-2023-03-26
-Designer: mytechtoday@protonmail.com
-Coder: ChatGPT
-*/
+// Define variables
+let colorScheme = "light";
 
-
-// Load the dashboard when the page is ready
-document.addEventListener("DOMContentLoaded", function() {
-  loadDashboard();
-});
-
-// Load the dashboard data and update the UI
-function loadDashboard() {
-  // Call the API to get the dashboard data
-  fetch('/api/dashboard')
-    .then(response => response.json())
-    .then(data => {
-      // Update the UI with the data
-      updateDashboard(data);
-      // Schedule a refresh of the dashboard every 30 seconds
-      setInterval(loadDashboard, 30000);
-    })
-    .catch(error => {
-      // Handle errors
-      console.error('Error loading dashboard:', error);
-      showError('Error loading dashboard');
-    });
+// Function to toggle the color scheme
+function toggleColorScheme() {
+  if (colorScheme === "light") {
+      colorScheme = "dark";
+  } else {
+      colorScheme = "light";
+  }
+  document.documentElement.style.cssText = Object.entries(COLOR_SCHEMES[colorScheme]).map(([k, v]) => `${k}: ${v}`).join(';');
 }
 
-// Update the UI with the dashboard data
-function updateDashboard(data) {
-  // Update the account balance
-  const balanceElement = document.getElementById('balance');
-  balanceElement.textContent = data.balance.toFixed(2);
-
-  // Update the list of open orders
-  const openOrdersElement = document.getElementById('open-orders');
-  openOrdersElement.innerHTML = '';
-  data.open_orders.forEach(order => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${order.symbol}</td>
-      <td>${order.side}</td>
-      <td>${order.price}</td>
-      <td>${order.amount}</td>
-      <td>${order.time}</td>
-    `;
-    openOrdersElement.appendChild(row);
-  });
-
-  // Update the list of transaction history
-  const transactionHistoryElement = document.getElementById('transaction-history');
-  transactionHistoryElement.innerHTML = '';
-  data.transaction_history.forEach(transaction => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${transaction.symbol}</td>
-      <td>${transaction.side}</td>
-      <td>${transaction.price}</td>
-      <td>${transaction.amount}</td>
-      <td>${transaction.time}</td>
-    `;
-    transactionHistoryElement.appendChild(row);
-  });
+// Function to update the dashboard with the latest data
+function updateDashboard() {
+  // Get the latest data from the server
+  const data = fetch('/api/data')
+      .then(response => response.json())
+      .then(data => {
+          // Update the dashboard with the new data
+          document.getElementById('price').textContent = data.price;
+          document.getElementById('balance').textContent = data.balance;
+          document.getElementById('transactions').innerHTML = data.transactions.map(t => `
+              <tr>
+                  <td>${t.type}</td>
+                  <td>${t.amount}</td>
+                  <td>${t.date}</td>
+              </tr>
+          `).join('');
+      });
 }
 
-// Show an error message
-function showError(message) {
-  const errorElement = document.getElementById('error');
-  errorElement.textContent = message;
-  errorElement.style.display = 'block';
+// Function to set up recurring orders
+function setRecurringOrders() {
+  // TODO: Implement
 }
+
+// Function to select an AI model
+function selectAIModel() {
+  // TODO: Implement
+}
+
+// Attach event listeners to UI elements
+document.getElementById('toggle-color-scheme').addEventListener('click', toggleColorScheme);
+document.getElementById('set-recurring-orders').addEventListener('click', setRecurringOrders);
+document.getElementById('select-ai-model').addEventListener('change', selectAIModel);
+
+// Update the dashboard on load and every 5 seconds
+updateDashboard();
+setInterval(updateDashboard, 5000);
