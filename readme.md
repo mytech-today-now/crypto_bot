@@ -3,13 +3,12 @@
 ---
 
 
-|  |  |
 | ------ | ------ |
 | **Name** | ChatBTC Cryptotrading Bot |
 | **Designer** | kyle@mytech.today |
 | **Coder** | ChatGPT-4 |
 | **Created** | 2023-03-27 - Version 10.3 - developed basic application with notification and logging |
-| **Updated** | 2023-03-28 - Version 15.2 - added SQLite DB to manage records and configurations.  Added AI trading models |
+| **Update-01** | 2023-03-28 - Version 15.2 - added SQLite DB to manage records and configurations.  Added AI trading models |
 
 
 ---
@@ -67,7 +66,7 @@ Version 15.2 of the Application:
 - `dashboard.html`: This file contains the HTML code for the trading bot dashboard. It includes a customizable user interface that allows users to change the color scheme, font size, and layout of the dashboard view.
 - `dashboard.css`: This file contains the CSS code for styling the trading bot dashboard. It allows users to customize the appearance of the dashboard to their liking.
 - `dashboard.js`: This file contains the JavaScript code for the trading bot dashboard. It includes the logic for updating and displaying.
-- `transactoions.db`: The SQLite database of table with user configuration settings, bot settings, and transaction log files.
+- `transactions.db`: The SQLite database of tables with user configuration settings, bot settings, and transaction log records.
 
 
 ## transactions.db:
