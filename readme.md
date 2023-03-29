@@ -8,7 +8,6 @@
 | **Name** | ChatBTC Cryptotrading Bot |
 | **Designer** | kyle@mytech.today |
 | **Coder** | ChatGPT-4 |
-
 | **Created** | 2023-03-27 - Version 10.3 - developed basic application with notification and logging |
 | **Updated** | 2023-03-28 - Version 15.2 - added SQLite DB to manage records and configurations.  Added AI trading models |
 
