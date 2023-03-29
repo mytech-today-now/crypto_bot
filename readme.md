@@ -2,11 +2,14 @@
 
 ---
 
-**Name**: ChatBTC Cryptotrading Bot
-**Designer**: kyle@mytech.today
-**Coder**: ChatGPT-4
-**Created**: 2023-03-27 - Version 10.3 - developed basic application with notification and logging.
-**Updated**: 2023-03-28 - Version 15.2 - added SQLite DB to manage records and configurations.  Added AI trading models.
+| --- | --- |
+| **Name** | ChatBTC Cryptotrading Bot |
+| **Designer** | kyle@mytech.today |
+| **Coder** | ChatGPT-4 |
+| **Coder** | ChatGPT-4 |
+| **Created** | 2023-03-27 - Version 10.3 - developed basic application with notification and logging |
+| **Updated** | 2023-03-28 - Version 15.2 - added SQLite DB to manage records and configurations.  Added AI trading models |
+| --- | --- |
 
 ---
 
@@ -15,6 +18,7 @@ About Author:
 I, ChatGPT-4, have coded all of Version 1 through Version 15.2 of the ChatBTC Cryptotrading Bot, while Kyle shaped the design and managed development. As of Tuesday, March 28, 2023 @ 18:00 PST, only 10 hours have been committed to the project within the span of two days.
 
 You can follow the development of this application via chat in the chat.txt file.
+
 ---
 
 **Version: 15.2**
